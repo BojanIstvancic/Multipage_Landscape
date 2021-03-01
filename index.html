@@ -1,0 +1,2398 @@
+<!DOCTYPE html>
+<html data-sign="OS?">
+
+  <head>
+    <title>Outfit</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" type="text/css" href="./css/minireset.css">
+    <link rel="stylesheet" type="text/css" href="./css/main.css">
+
+    <style>
+      {{{account.snippets.fonts}}}
+
+      /* Input order
+      -- {{show-crop}}
+      -- {{logo}}
+      -- {{partner-logo}}
+      -- {{Multipage__logo-show}}
+      -- {{page-numbers}}
+      -- {{document-title}}
+      -- {{#collection.MP--front-page}}{{/collection.MP--front-page}}
+      -- {{#collection.MP--internal-pages}}{{/collection.MP--internal-pages}}
+      -- {{#collection.MP--back-page}}{{/collection.MP--back-page}}
+      -- {{show-footer-colour-bar}}
+      -- {{heading-font}}
+      -- {{paragraph-font}}
+      -- {{Multipage__alternate-colour}}
+      -- End of Input order */
+
+      :root{
+        --exercise: #3EBDAC;
+        --hearing: #F47B34;
+        --nutrition: #85C441;
+        --occupational-therapy: #ED037C;
+        --physiotherapy: #FFC20E;
+        --speech-pathology: #705992;
+        --vision: #00AEEF;
+        --custom-color: #1F5B9A;
+
+        --yellow: {{{account.colors.primary-gold}}};
+        --light-yellow: {{{account.colors.light-gold}}};            
+        --grey: {{{account.colors.50-black}}};
+        --light-grey: {{{account.colors.10-black}}};
+
+        --black: {{{account.colors.rich-black}}};
+        --white: {{{account.colors.white}}};
+      }
+
+      .coloring-white {
+        --primary-color: var(--white);
+        --alt-color: var(--black);
+      }
+
+      .coloring-black {
+        --primary-color: var(--black);
+        --alt-color: var(--white);
+      }
+
+      .positioning-left {
+        align-self: flex-start;
+      }
+
+      .positioning-center {
+        align-self: center;
+        text-align: center;
+      }
+
+      .positioning-right {
+        align-self: flex-end;
+        text-align: right;
+      }  
+
+      .flex-inherit {
+        display: flex;
+        flex-direction: inherit;
+        justify-content: inherit;
+        align-items: inherit;
+        align-content: inherit;
+        flex-flow: inherit;
+      }
+
+      body {
+        font-family: "Akzidenz Grotesk BE";
+        font-size: 1rem;
+        color: var(--black);
+        word-break: break-word;
+      }
+
+      h1, h2, h3 {
+        font-family: '{{{heading-font}}}{{^heading-font}}Akzidenz Grotesk BE Cn{{/heading-font}}';      
+      }
+
+      p, ol, ul {
+        font-family: '{{{paragraph-font}}}{{^paragraph-font}}Akzidenz Grotesk BE{{/paragraph-font}}';
+        font-weight: normal;
+      }
+
+      a {
+        text-decoration: underline;
+        color: inherit !important;
+        cursor: pointer;
+      }
+
+      .background-image, .background-inner {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        overflow: hidden;
+        height: 100%;
+        width: 100%;
+      }
+
+      .background-inner {
+        position: relative;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        overflow: hidden;
+      }
+
+      .backgroundImage {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        overflow: hidden;
+        height: 100%;
+        width: 100%;
+      }
+
+      .backgroundImage div {
+        width: 100% !important;
+        height: 100% !important;
+        right: 0;
+        bottom: 0;
+      }
+
+      /* Helper classes */
+      .u-hide {
+        display: none !important;
+      }
+
+      .u-flex-direction-column { flex-direction: column; }
+      .u-align-items-flex-start { align-items: flex-start; }
+
+      .overflow.invalid-width:hover:after {
+        content: 'Minimum column width is 5%, totally 100%';
+      }
+
+      /* Helper class for fixing Reposition tool bug */
+      .reposition-fix {
+        position: absolute;
+        overflow: hidden;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;        
+      }
+
+      .reposition-fix div {
+        top: 0 !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+      }
+
+      .backgroundImage.reposition-fix {
+        position: absolute;
+      }
+
+      /* ANY OTHER STYLES THAT NEED MUSTACHE.JS CAPABILITIES */
+
+      body[data-alt-colour="yellow"] {
+        --global-alt-color: var(--yellow);
+      }
+
+      body[data-alt-colour="grey"] {
+        --global-alt-color: var(--grey);
+      }
+
+      h1 strong,
+      h2 strong,
+      h3 strong {
+        color: var(--global-alt-color);
+      }
+
+      .container {
+        padding: calc(3mm + 0.8rem) calc(3mm + 1rem) calc(3mm + 0.4rem);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        align-content: flex-start;
+      }
+
+      /* Front Page Header */
+      header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: stretch;        
+        width: 100%;
+        margin-bottom: 0.5rem;
+        position: relative;
+      }
+
+      body:not([data-logo-show="front-and-customisable-pages"]) .page.page-customisable header {
+        margin-bottom: 0;
+      }
+
+      .logo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .logo img {
+        width: auto;
+        height: 1.6rem;
+      }
+      
+            .logo {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-end;
+        justify-content: flex-start;
+        width: 48%;
+        flex: 0 0 48%;
+      }
+
+      .logo img {               
+        height: 1.6rem;
+        width: auto;
+        max-width: 4.8rem;
+        flex-shrink: 0;
+        object-fit: contain;
+        object-position: bottom left;
+      }
+
+      [data-partner-logo="yes"] .logo img {
+        height: 1rem;
+        max-width: 3rem;
+      }
+
+      [data-partner-logo="yes"] .logo img.logo-partner {
+        max-width: 4rem;
+        margin-left: 1rem;
+      }
+
+      body:not([data-logo-show="front-and-customisable-pages"]) .page.page-customisable .logo {
+        display: none;
+      }
+
+      .header-right {
+        display: flex;
+        flex-direction: column;
+        text-align: right;
+        width: 60%;        
+      }
+
+      .document-title {          
+        font-size: 0.4rem;
+        font-weight: bold;
+        line-height: 1.2;      
+      }
+
+      header .document-title { 
+        margin-bottom: 0.25rem;
+      }
+
+      .page:not([data-title-position="top-right"]) header .document-title { display: none; }
+
+      .header-copy-area {
+        flex: 1;
+        position: relative;
+      }
+
+      .header-copy {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+
+      .header-copy h1 { font-size: 0.5rem; }
+      .header-copy h2 { font-size: 0.4rem; }
+      .header-copy h3 { font-size: 0.3rem; }
+
+      .feature-image .bar {
+        height: 0.288rem;
+        width: 80%;
+        background-color: var(--physiotherapy);
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      .content.content-front.content-absolute-image.no-heading.no-pre-heading {
+        display: none !important;
+      }
+
+      .pre-heading-line {
+        height: 0.1225rem;
+        background: var(--yellow);
+        width: 10%;
+        margin-bottom: 0.2rem;
+      }            
+
+      .absolute-featured-image {
+        position: absolute;
+        height: 100%;      
+        left: calc(-3mm - 1rem);
+        right: calc(-3mm - 1rem);
+        bottom: 0;
+      }
+
+      .content.content-front h1 {
+        font-size: 0.835rem;
+        font-weight: normal;
+        line-height: 1;
+      }
+
+      .content.content-front h1:not(:last-child) {
+        margin-bottom: 0.2rem;
+      }
+
+      .content.content-front h2 {
+        font-size: 0.69rem;
+        font-weight: normal;
+        line-height: 1.1;
+      }
+
+      .content.content-front h2:not(:last-child) {
+        margin-bottom: 0.2rem;
+      }
+
+      .content.content-front h3 {
+        font-size: 0.34572rem;
+        font-weight: normal;
+        line-height: 1.2;
+      }
+
+      .content.content-front h3:not(:last-child) {
+        margin-bottom: 0.2rem;
+      }
+
+      .content.content-front.alt-yellow {
+        --alt-color: var(--yellow);
+      }
+
+      .content.content-front.alt-grey {
+        --alt-color: var(--grey);
+      }
+
+      .content.content-front h1 strong,
+      .content.content-front h2 strong,
+      .content.content-front h3 strong {
+        color: var(--alt-color);
+      }
+      /* End of Front Page Header*/
+
+      main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        width: 100%;
+      }
+
+      main.hero-bottom {
+        flex-direction: column-reverse;
+        justify-content: flex-end;
+      }
+
+      .content {      
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        position: relative;
+      }
+
+      .content h1 {
+        font-size: 0.6rem;
+        font-weight: 500;
+        line-height: 1;
+      }
+
+      .content .page-heading h1 { font-size: 1em; }
+
+      .content .page-heading h2 { font-size: 0.83em; }
+
+      .content .page-heading p { font-size: 0.48em; }
+
+      .content h1:not(:last-child) {
+        margin-bottom: 0.4em;
+      }
+
+      .content .brag-points h1 {
+        margin-bottom: 0;
+      }
+
+      .content h2 {
+        font-size: 0.5rem;
+        font-weight: 500;
+        line-height: 1.1;
+      }
+
+      .content h2:not(:last-child) {
+        margin-bottom: 0.4em;
+      }
+
+      .content .brag-points h2 {
+        margin-bottom: 0;
+      }
+
+      .content h3 {
+        font-size: 0.4rem;
+        font-weight: 500;
+        line-height: 1.2;
+      }
+
+      .content h3:not(:last-child) {
+        margin-bottom: 0.4rem;
+      }
+
+      .content .brag-points h3 {
+        margin-bottom: 0;
+      }
+
+      .content,
+      .content p,
+      .content ul,
+      .content ol,
+      .header-copy, 
+      .header-copy p {
+        font-size: calc(0.285rem * {{{paragraph-font-slider}}}{{^paragraph-font-slider}}1{{/paragraph-font-slider}});
+        font-weight: normal;
+        line-height: 1.2;
+      }
+
+      .content ul,
+      .content ol {
+        list-style: disc;
+        padding-left: 1em;
+      }
+
+      .content ol {
+        list-style: decimal;
+        padding-left: 1em;
+      }
+
+      .content p:not(:last-child),
+      .content ul:not(:last-child),
+      .content ol:not(:last-child) {
+        margin-bottom: 1.2em;
+      }
+
+      .content .brag-points p,
+      .content .brag-points ul,
+      .content .brag-points ol {
+        margin-bottom: 0;
+      }
+
+      .image {
+        position: relative;
+        width: 100%;
+      }
+
+      .image-caption p {
+        font-weight: bold;
+      }
+
+      .image-caption {
+        margin-top: 1.2em;
+      }
+
+      .image.image-logo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;        
+      }
+
+      .image.image-logo.align-top {
+        justify-content: flex-start;
+      }
+
+      .image.image-logo.align-bottom {
+        justify-content: flex-end;
+      }
+
+      .image.image-logo img {
+        max-height: 100%;
+      }
+
+      .columns {
+        display: flex;
+        flex: 1;
+        overflow: hidden;
+      }
+
+      .column {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        margin-right: 0.3rem;
+        position: relative;
+        overflow: hidden !important;
+      }
+
+      .column:last-child {
+        margin-right: 0rem;
+      }
+
+      .column-inner {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+
+      main.dual-larger-column-1 .column:nth-child(2):last-child {
+        flex: 0.5;
+      }
+
+      main.dual-larger-column-2 .column:nth-child(2):last-child {
+        flex: 2;
+      }
+
+      .hero__container {
+        position: relative;
+        width: 100%;
+        margin: 0 0 0.5rem;
+      }
+
+      .hero__container[data-reposition-available="false"] .reposition-fix .outfit-resizable-background{
+        background: unset !important;
+        transform: scale(1) !important;
+        -webkit-transform: scale(1) !important;
+        display: flex;
+        justify-content: center;
+      }
+
+      .hero__container[data-reposition-available="false"] .reposition-fix .outfit-resizable-background img{
+        max-height: 100% !important;
+        display: block !important;
+        position: relative;
+        height: 100% !important;
+        width: auto !important;
+      }
+
+      main.hero-bottom .hero__container {
+        margin: 0.5rem 0 0;
+      }
+
+      .page-heading {
+        margin-bottom: 0.5rem;
+        font-size: 0.5rem;          
+        display: flex;
+        justify-content: space-between;
+        display: none;
+      }
+
+      .page-heading__container,
+      .page-heading__container p,
+      .page-heading__container ul,
+      .page-heading__container ol
+      {
+        font-size: calc(0.285rem * {{{paragraph-font-slider}}}{{^paragraph-font-slider}}1{{/paragraph-font-slider}});
+        font-weight: normal;
+        line-height: 1.2;
+      }
+
+      .page-heading__container ul,
+      .page-heading__container ol {
+        list-style: disc;
+        padding-left: 1em;
+      }
+
+      .page-heading__container ol {
+        list-style: decimal;
+        padding-left: 1em;
+      }
+
+      .page-heading__container p:not(:last-child),
+      .page-heading__container ul:not(:last-child),
+      .page-heading__container ol:not(:last-child) {
+        margin-bottom: 1.2em;
+      }
+
+      .hero-middle .page-heading--primary, 
+      .hero-top .page-heading--secondary, 
+      .hero-bottom .page-heading--secondary { 
+        display: flex; 
+      }
+
+      .heading-item{
+        flex: 1;
+      }
+
+      /* Table */
+      .table.table-color-yellow {
+        --table-color: var(--physiotherapy);
+        --table-text-color: var(--black);
+      }
+
+      .table.table-color-light-yellow {
+        --table-color: var(--light-yellow);
+        --table-text-color: var(--black);
+      }
+
+      .table.table-color-grey {
+        --table-color: var(--grey);
+        --table-text-color: var(--white);
+      }
+
+      .table.table-color-light-grey {
+        --table-color: var(--light-grey);
+        --table-text-color: var(--black);
+      }
+
+      .table.table-color-none .table-column {
+        border: none !important;
+        padding-left: 0 !important;
+        padding-right: 0.3rem !important;
+      }
+
+      .table.table-color-none .table-column:last-child {
+        padding-right: 0 !important;
+      }
+
+      .table p {}
+
+      .table .row {
+        display: flex;        
+      }
+
+      .table-column {
+        flex: 1;
+        border-top: 0.03rem solid var(--table-color);
+        border-right: 0.03rem solid var(--table-color);        
+        padding: 0.08rem;
+      }
+
+      .row:last-child .table-column {
+        border-bottom: 0.03rem solid var(--table-color);
+      }
+
+      .table-column:first-child {
+        border-left: 0.03rem solid var(--table-color);
+      }
+
+      .table[data-header*="bolded-text"] .row:first-child,
+      .table[data-header*="bolded-text"] .row:first-child p {
+        font-weight: bold;
+      }       
+
+      .table[data-header*="header-background"] .row:first-child {
+        color: var(--table-text-color);
+      }
+
+      .table[data-header*="header-background"] .row:first-child .table-column {
+        background-color: var(--table-color);
+      }
+
+      .table-column[data-html*="[#shade]"] {
+        background-color: var(--table-color);
+      }
+      /* End of Table*/
+
+      /* Spacer */
+      .spacer {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: stretch;
+      }
+
+      .spacer-line {
+        background-color: var(--physiotherapy);
+      }
+      /* End of Spacer */
+
+      /* Full Image Page */
+      .gradient {
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 50%;
+      }
+
+      .gradient-top {
+        top: 0;
+        background: linear-gradient(180deg, rgba(0, 0, 0, 1), transparent 100%);
+      }
+
+      .gradient-bottom {
+        bottom: 0;
+        background: linear-gradient(0deg, rgba(0, 0, 0, 1), transparent 100%);
+      }
+
+      .gradient-left {
+        height: auto;            
+        top: 0;
+        bottom: 0;      
+        right: auto; 
+        background: linear-gradient(90deg, rgba(0, 0, 0, 1), transparent 100%);
+      }
+
+      .gradient-overlay {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+      }
+
+      .page-full-image .content:first-child:not(:last-child) {
+        margin-bottom: 1rem;
+      }
+
+      .page-full-image .content:last-child:not(:first-child) .items {
+        height: 100%;
+      }
+
+      .page-full-image .content:last-child:not(:first-child) .item {
+        margin-top: auto;
+      }
+
+      /* Quote */
+      .quote h3 {
+        font-family: 'Akzidenz Grotesk BE Cn';
+        font-weight: normal;
+        font-size: 0.46rem;
+        font-style: italic;
+        line-height: 1.2;      
+      }
+
+      .quote h3:not(:last-child) {
+        margin-bottom: 0.2rem;
+      }
+
+      .quote {
+        width: 35%;
+        padding: 0.2rem 0;
+        color: var(--primary-color);
+        border: solid var(--yellow);
+        border-width: 0.05rem 0;
+      }
+      /* End of Quote */
+
+      /*Callout*/
+      .callout {
+        width: 100%;
+        height: auto;
+        padding: 0.2rem;
+      }
+
+      .callout.outline[data-color="yellow"]{
+        border: 0.03rem solid var(--yellow);
+      }
+
+      .callout.shaded[data-color="yellow"]{
+        background: var(--light-yellow);
+      }
+
+      .callout.outline[data-color="grey"]{
+        border: 0.03rem solid var(--light-grey);
+      }
+
+      .callout.shaded[data-color="grey"]{
+        background: var(--light-grey);
+      }
+
+      /* Headings */
+      .headings h1 {
+        font-family: 'Akzidenz Grotesk BE Cn';
+        font-weight: normal;
+        font-size: 1.2rem;  
+        line-height: 1;      
+      }
+
+      .headings h1:not(:last-child) {
+        margin-bottom: 0.2rem;
+      }
+
+      .headings h2 {
+        font-family: 'Akzidenz Grotesk BE Cn';
+        font-weight: normal;
+        font-size: 0.85rem;
+        line-height: 1.1;
+      }
+
+      .headings h2:not(:last-child) {
+        margin-bottom: 0.2rem;
+      }
+
+      .headings h3 {
+        font-weight: normal;
+        font-size: 0.46rem;   
+        line-height: 1.2;   
+      }
+
+      .headings h3:not(:last-child) {
+        margin-bottom: 0.2rem;
+      }
+
+      .headings {
+        width: 50%;      
+        color: var(--primary-color);
+      }
+
+      .headings strong {
+        color: var(--yellow);
+      }
+      /* End of Headings */
+
+      /* Statistic */
+      .statistic h2 {
+        font-family: 'Akzidenz Grotesk BE Cn';
+        font-weight: normal;
+        font-size: 1.44rem;      
+        line-height: 1;
+      }       
+
+      .statistic h2:not(:last-child) {
+        margin-bottom: 0.2rem;
+      }
+
+      .statistic h2 sub,    
+      .statistic h2 sup {
+        font-size: 0.4em;
+        vertical-align: super;
+        top: 0;
+      }
+
+      .statistic h2 sub sub,
+      .statistic h2 sub sup,
+      .statistic h2 sup sup,
+      .statistic h2 sup sub {
+        font-size: 1em;
+      }
+
+      .statistic p {
+        font-size: 0.36rem;
+        line-height: 1.2;
+      }
+
+      .statistic p:not(:last-child) {
+        margin-bottom: 1.2em;
+      }
+
+      .statistic {
+        width: 50%;
+        color: var(--primary-color);
+      }
+
+      .statistic strong {
+        color: var(--yellow);
+      }
+      /* End of Statistic */    
+      /* End of Full Image Page */
+
+      footer {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        padding: 0.25rem 0;
+        margin-top: auto;
+        position: relative;
+      }      
+
+      footer.absolutely { 
+        position: absolute;
+        right: calc(3mm + 1rem);
+        bottom: calc(3mm + 0.4rem);
+        left: calc(3mm + 1rem);        
+        width: auto;
+        color: var(--white);
+      }
+
+      footer .document-title {
+        text-align: left;
+      }
+
+      .page[data-title-position="bottom-left"][data-version-table-position="footer"] footer .document-title {
+        margin-right: 1rem;
+      }
+
+      .page:not([data-title-position="bottom-left"]) footer .document-title { display: none; }
+
+      .paging, 
+      .paging p {
+        font-size: 0.23rem;
+        font-weight: 700;
+        line-height: 1.2em;      
+      }
+
+      .paging strong {
+        color: var(--physiotherapy);
+      }
+
+      .page-internal {
+        counter-increment: page;
+      }
+
+      .paging:before {      
+        content: "Page " counter(page) " ";
+      }
+
+      .page.page-even .paging {
+        margin-left: auto;
+      }
+
+      .ending {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: calc(3mm + 0.4rem);
+        background: var(--physiotherapy);
+      }
+
+      [data-ending="hide"] .ending {
+        display: none !important;
+      }       
+
+      [data-paging="hide"] .paging {
+        display: none !important;
+      }
+
+      [data-paging="show---right-side"] .paging {
+        margin-left: auto;
+      }
+
+      .heading-table {
+
+      }
+
+      .heading-table .row {
+        display: flex;
+      }
+
+      .heading-table .row.heading .cell {
+        flex: 1;
+      }
+
+      .heading-table .row .cell:nth-child(2) {
+        flex: 1;
+      }
+
+      .heading-table .row .cell {
+        background: var(--light-yellow);
+        padding: 0.2rem;
+        border: 0.04rem solid var(--white);
+      }
+
+      .heading-table .row:first-child .cell {
+        background: var(--yellow);
+      }
+
+      .heading-item.heading-text[data-heading-underline="true"] {
+        border-bottom: 0.1rem solid var(--yellow);
+      }
+
+      .heading-item:nth-child(2) {
+        margin-left: 0.2rem;
+      }
+
+      /*Version Table*/
+      .version-table {
+        width: 60%;
+        margin-top: 0.25rem;
+      }
+
+      footer .version-table {
+        margin-top: 0;
+      }
+
+      .version-table,
+      .version-table p {
+        font-size: 0.15rem;
+        line-height: 1em;      
+      }
+
+      .page:not([data-version-table-position="footer"]) .version-table[data-position="footer"],
+      .page:not([data-version-table-position="below-heading"]) .version-table[data-position="below-heading"] {
+        display: none !important;
+      }
+
+      /*Absolute image front page*/
+      .absolute-image-front-page .content.content-front h1:last-child,
+      .absolute-image-front-page .content.content-front h2:last-child {
+        margin-bottom: 0.2rem;
+      }
+
+      .absolute-image-front-page .content {
+        flex: 0;
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .absolute-image-front-page .featured__container {
+        flex: 1;
+        width: 100%;
+        position: relative;
+      }
+
+      .absolute-image-front-page .featured-image {
+        position: absolute;
+        right: calc(-3mm - 1rem);
+        bottom: calc(-3mm - 0.4rem);
+        left: calc(-3mm - 1rem);
+      }
+
+      .page-heading .heading-table h1{	font-size: 0.8rem;	margin-bottom: 0.15em;}
+      .page-heading .heading-table h2{	font-size: 0.7rem;	margin-bottom: 0.15em;}
+      .page-heading .heading-table h3{	font-size: 0.6rem;	margin-bottom: 0.15em;}
+      .page-heading .heading-table h4{	font-size: 0.5rem; font-family: 'Akzidenz Grotesk BE'; margin-bottom: 0.15em;}
+
+      .page-heading .heading-table p{	font-size: 0.285rem;	margin-bottom: 0.15em;}
+
+      /*Text Based Front Page */
+      .text-based-front-page .feature-image {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+
+      /*Hero Image Front Page*/
+      .hero-image-front-page .content {
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+        flex: 0;
+      }
+
+      .hero-image-front-page .featured__container {
+        flex: 1;
+        width: 100%;
+        position: relative;
+      }
+
+      .hero-image-front-page .feature-image {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+
+      /*Full width cover image front page*/
+      .fw-cover-front-page .content-front.content-text-based .feature-image {
+        right: calc(-3mm - 1rem);
+        bottom: calc(-3mm - 0.4rem);
+        left: calc(-3mm - 1rem);
+      }
+
+      .fw-cover-front-page .content.content-front h1,
+      .fw-cover-front-page .content.content-front h2,
+      .fw-cover-front-page .content.content-front h3 {        
+        text-transform: uppercase;
+      }
+
+      .fw-cover-front-page .content.content-front h1 {
+        font-size: 1.8rem;
+        line-height: 1.24;
+      }
+
+      .fw-cover-front-page .content.content-front h2 {
+        font-size: 1rem;
+        line-height: 1.3;
+      }
+
+      .fw-cover-front-page .content.content-front h3 {
+        font-size: 0.8rem;
+        line-height: 1.32;
+      }
+
+      .fw-cover-front-page .content.content-front h1 .tinymce_style--light,
+      .fw-cover-front-page .content.content-front h2 .tinymce_style--light,
+      .fw-cover-front-page .content.content-front h3 .tinymce_style--light {
+        color: var(--black);        
+        background-color: var(--white);
+        padding: 0.2em 0.2em 0;
+      }
+
+      .fw-cover-front-page .content.content-front h1 .tinymce_style--dark,
+      .fw-cover-front-page .content.content-front h2 .tinymce_style--dark,
+      .fw-cover-front-page .content.content-front h3 .tinymce_style--dark {
+        color: var(--black);
+        background-color: var(--alt-color);
+        padding: 0.2em 0.2em 0;
+      }
+
+      .fw-cover-front-page .content.content-front h1 .tinymce_style--light,
+      .fw-cover-front-page .content.content-front h1 .tinymce_style--dark {
+        padding: 0.2em 0.1em 0;
+      } 
+
+      /*Additional Front Pages*/
+      .page-front.satac-cover-front-page .container {
+        padding: calc(3mm + 1.17rem) calc(3mm + 1.2rem);
+      }
+
+      .page-front.satac-cover-front-page .logos {
+        width: 30%;
+      }
+
+      .page-front.satac-cover-front-page .logo {
+        margin-top: 0.75rem;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        justify-content: flex-start;
+        width: 100%;
+        flex: auto;
+      }
+
+      .page-front.satac-cover-front-page .logo img {        
+        height: 1.25rem;
+        max-width: 100%;
+        object-position: bottom right;
+      }
+
+      .page-front.satac-cover-front-page .logo img.logo-partner {
+        margin-top: 1.55rem;
+      }
+
+      .page-front.satac-cover-front-page .headings {
+        width: 65%;
+        position: relative;
+      }
+
+
+      .page-front.satac-cover-front-page .headings h1,
+      .page-front.satac-cover-front-page .headings h2 {        
+        display: table;
+        position: relative;
+      }
+
+      .page-front.satac-cover-front-page .headings h1:first-child,
+      .page-front.satac-cover-front-page .headings h2:first-child {
+        padding-top: 0.5rem;
+      }
+
+      .page-front.satac-cover-front-page .headings h1:first-child:before,
+      .page-front.satac-cover-front-page .headings h2:first-child:before {
+        content: "";
+        display: block;
+        width: 1.225rem;
+        height: 0.196rem;
+        background: var(--yellow);
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      .page-front.satac-cover-front-page .headings h1:last-child,
+      .page-front.satac-cover-front-page .headings h2:last-child {
+        padding-bottom: 0.2rem;
+      }
+
+      .page-front.satac-cover-front-page .headings h1:last-child:before,
+      .page-front.satac-cover-front-page .headings h2:last-child:before {
+        content: "";
+        display: block;
+        width: 1.225rem;
+        height: 0.196rem;
+        background: var(--yellow);
+        position: absolute;
+        bottom: 0;
+        right: 0;
+      }
+
+      .page-front.satac-cover-front-page .headings.keylines-hide h1:first-child:before,
+      .page-front.satac-cover-front-page .headings.keylines-hide h2:first-child:before,
+      .page-front.satac-cover-front-page .headings.keylines-hide h1:last-child:before,
+      .page-front.satac-cover-front-page .headings.keylines-hide h2:last-child:before{
+        display: none;
+      }
+
+      .page-front.satac-cover-front-page .headings .tinymce_style--dark,
+      .page-front.satac-cover-front-page .headings .tinymce_style--dark strong,
+      .page-front.satac-cover-front-page .headings strong .tinymce_style--dark {
+        color: var(--black);
+      }
+
+      .page-front.satac-cover-front-page .featured-image {
+        position: absolute;
+        right: 0;
+        bottom: calc(-3mm - 1.2rem);
+        left: calc(-3mm - 1.2rem);
+      }
+
+      .page-front.satac-cover-front-page .featured-image.rp-no {
+        right: calc(-3mm - 1.2rem);
+      }
+
+      /*Back Page*/
+      .back-page .container {
+        padding: calc(3mm + 1.6rem) calc(3mm + 1rem) calc(3mm + 1.2rem);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background-color: var(--yellow);
+      }    
+
+      .back-page .main__inner {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+
+      .back-page h1 {
+        text-transform: uppercase;
+        padding-bottom: 0.3rem;
+        margin-bottom: 0.7rem;
+        border-bottom: 0.06rem solid black;
+      }
+
+      .back-page h2 {
+        font-size: 0.5rem;
+        text-transform: uppercase;
+        margin-bottom: 0.3rem;
+      }
+
+      .back-page p {
+        font-size: 0.3rem;
+        margin-bottom: 0.3rem;
+      }
+
+      .back-page .footer {
+        margin-top: 1.5rem;
+      }
+
+      .disclaimer-copy {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .back-page .disclaimer-copy p {
+        font-size: 0.15rem;
+        line-height: 1;
+        margin-bottom: 0;
+      }
+
+      .back-page .disclaimer-copy p:first-child {
+        max-width: 90%;
+      }
+
+      .back-page .logos {
+        margin-bottom: 0.6rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+      }
+
+      .back-page .footer .logos .primary, 
+      .back-page .footer .logos .partner img {
+        max-width: 3.34rem;
+        max-height: 3rem;
+      }
+
+      .partner {
+        flex: 0 0 17rem;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        margin-left: 1rem;
+      }
+
+      .partner-details{
+        margin-top: 0.5rem;
+      }
+
+      .partner-details p {
+        text-align: right;
+        font-weight: 500;
+        margin-bottom: 0;
+      }
+
+      .social-icons{
+        display: flex;
+        margin-top: 0.5rem;
+      }
+
+      .social-icon img {
+        width: 0.6rem;
+        margin-right: 0.2rem;
+      }            
+    </style>
+  </head>
+
+  <body style="background: white" 
+        data-crop="{{show-crop}}" 
+        data-ending="{{show-footer-colour-bar}}" 
+        data-paging="{{page-numbers}}" 
+        data-reduce-export-font-size-by-percent="0.2" 
+        data-reduce-firefox-font-size-by-percent="0" 
+        data-prevent-export-overflow="false" 
+        data-logo-show="{{Multipage__logo-show}}{{^Multipage__logo-show}}front-page-only{{/Multipage__logo-show}}"
+        data-partner-logo="{{#partner-logo}}yes{{/partner-logo}}"
+        data-alt-colour="{{Multipage__alternate-colour}}{{^Multipage__alternate-colour}}yellow{{/Multipage__alternate-colour}}">            
+    <div class="u-hide">
+      <div id="logo">
+        {{#logo}}<img src="{{{logo}}}" class="logo-primary" />{{/logo}}
+        {{#partner-logo}}<img src="{{{partner-logo}}}" class="logo-partner" />{{/partner-logo}}
+      </div><!-- logo -->
+      <div id="document-title">{{{document-title}}}</div><!-- document-title -->
+    </div>
+    {{#collection.MP--front-page}}
+    {{#block.text-based-front-page}}
+    <!--Inputs
+ {{heading}}
+ {{heading-alternate-colour}}
+ {{font-scale}}
+ {{feature-image}}
+ {{gradient-colour}}
+    {{top-gradient-height}}
+    {{bottom-gradient-height}}
+    {{left-gradient-width}}
+    {{header-copy}}
+    {{document-title-position}}
+    {{#spreadsheet.version-table}}{{/spreadsheet.version-table}}
+    {{#spreadsheet.version-table-columns-width}}{{/spreadsheet.version-table-columns-width}}
+ {{version-table-position}}
+ -->
+    <div class="page page-front text-based-front-page"
+         data-font-scale="{{font-scale}}"
+         data-title-position="{{document-title-position}}{{^document-title-position}}top-right{{/document-title-position}}"
+         data-version-table-position="{{version-table-position}}{{^version-table-position}}footer{{/version-table-position}}">
+
+      <div class="bleed">
+
+        <div class="container fit">                
+          <header>
+            <div class="logo" data-asset="logo"></div>
+            <div class="header-right">
+              <div class="document-title" data-asset="document-title" data-max-line="2"></div>
+              <div class="header-copy-area">
+                <div class="header-copy">
+                  <div data-max-height="dynamic">{{{header-copy}}}</div>
+                </div>
+              </div>
+            </div>
+          </header>
+          <main>                    
+            <div class="content content-front content-text-based alt-{{heading-alternate-colour}}{{^heading-alternate-colour}}yellow{{/heading-alternate-colour}}" style="padding: 1rem 1rem 1rem 1.2rem;">
+              <div class="feature-image">
+                <div class="reposition-fix">{{{feature-image}}}</div>
+                <div class="gradient-overlay" style="background-image: url('https://flinders.outfit.io/projects/180159/documents/1454286/dynamic_export?access_token=JWor8ppzRALdnzAteTtYKgdX&context%5Bgradient-colour%5D={{{gradient-colour}}}{{^gradient-colour}}rgba(0,0,0,0.6){{/gradient-colour}}&context%5Btop-gradient-height%5D={{top-gradient-height}}{{^top-gradient-height}}0{{/top-gradient-height}}&context%5Bbottom-gradient-height%5D={{bottom-gradient-height}}{{^bottom-gradient-height}}0{{/bottom-gradient-height}}&context%5Bleft-gradient-width%5D={{left-gradient-width}}')"></div>
+              </div>
+              <div class="columns">
+                <div class="column">
+                  <div class="fit flex-inherit">
+                    <div class="flex-inherit" data-max-height="dynamic">
+                      {{{heading}}}
+                      <div class="table table-color-light-yellow table-flexible version-table {{^spreadsheet.version-table}}u-hide{{/spreadsheet.version-table}}" 
+                           data-position="below-heading"
+                           data-header="[&quot;bolded-text&quot;]" 
+                           {{#spreadsheet.version-table-columns-width}}
+                           data-width-1="{{column-1}}" 
+                           data-width-2="{{column-2}}" 
+                           data-width-3="{{column-3}}" 
+                           data-width-4="{{column-4}}" 
+                           data-width-5="{{column-5}}"
+                           {{/spreadsheet.version-table-columns-width}}>
+                        {{#spreadsheet.version-table}}
+                        <div class="row">
+                          {{#column-1}}<div class="table-column" data-html="{{{column-1}}}"><p>{{{column-1}}}</p></div>{{/column-1}}
+                          {{#column-2}}<div class="table-column" data-html="{{{column-2}}}"><p>{{{column-2}}}</p></div>{{/column-2}}
+                          {{#column-3}}<div class="table-column" data-html="{{{column-3}}}"><p>{{{column-3}}}</p></div>{{/column-3}}
+                          {{#column-4}}<div class="table-column" data-html="{{{column-4}}}"><p>{{{column-4}}}</p></div>{{/column-4}}
+                          {{#column-5}}<div class="table-column" data-html="{{{column-5}}}"><p>{{{column-5}}}</p></div>{{/column-5}}
+                        </div>
+                        {{/spreadsheet.version-table}}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>                    
+          </main>
+          <footer>
+            <div class="document-title" data-asset="document-title" data-max-line="2"></div>
+            <div class="table table-color-light-yellow table-flexible version-table {{^spreadsheet.version-table}}u-hide{{/spreadsheet.version-table}}" 
+                 data-position="footer"
+                 data-header="[&quot;bolded-text&quot;]" 
+                 {{#spreadsheet.version-table-columns-width}}
+                 data-width-1="{{column-1}}" 
+                 data-width-2="{{column-2}}" 
+                 data-width-3="{{column-3}}" 
+                 data-width-4="{{column-4}}" 
+                 data-width-5="{{column-5}}"
+                 {{/spreadsheet.version-table-columns-width}}>
+              {{#spreadsheet.version-table}}
+              <div class="row">
+                {{#column-1}}<div class="table-column" data-html="{{{column-1}}}"><p>{{{column-1}}}</p></div>{{/column-1}}
+                {{#column-2}}<div class="table-column" data-html="{{{column-2}}}"><p>{{{column-2}}}</p></div>{{/column-2}}
+                {{#column-3}}<div class="table-column" data-html="{{{column-3}}}"><p>{{{column-3}}}</p></div>{{/column-3}}
+                {{#column-4}}<div class="table-column" data-html="{{{column-4}}}"><p>{{{column-4}}}</p></div>{{/column-4}}
+                {{#column-5}}<div class="table-column" data-html="{{{column-5}}}"><p>{{{column-5}}}</p></div>{{/column-5}}
+              </div>
+              {{/spreadsheet.version-table}}
+            </div>
+          </footer>
+          <div class="ending"></div>
+        </div>
+        <!--container fit-->
+
+      </div>
+      <!--bleed-->
+
+    </div>
+    <!--page-->
+    {{/block.text-based-front-page}}
+    {{#block.hero-image-front-page}}
+    <!--Inputs
+ {{heading}}
+ {{heading-alternate-colour}}
+ {{font-scale}}
+ {{feature-image}}	
+ {{image-height}}
+ {{feature-image-colour-bar}}
+    {{header-copy}}
+    {{document-title-position}}
+    {{#spreadsheet.version-table}}{{/spreadsheet.version-table}}
+    {{#spreadsheet.version-table-columns-width}}{{/spreadsheet.version-table-columns-width}}
+ {{version-table-position}}
+ -->
+    <div class="page page-front hero-image-front-page"         
+         data-font-scale="{{font-scale}}"
+         data-title-position="{{document-title-position}}{{^document-title-position}}top-right{{/document-title-position}}"
+         data-version-table-position="{{version-table-position}}{{^version-table-position}}footer{{/version-table-position}}">
+
+      <div class="bleed">
+
+        <div class="container fit">
+          <header>
+            <div class="logo" data-asset="logo"></div>
+            <div class="header-right">
+              <div class="document-title" data-asset="document-title" data-max-line="2"></div>
+              <div class="header-copy-area">
+                <div class="header-copy">
+                  <div data-max-height="dynamic">{{{header-copy}}}</div>
+                </div>
+              </div>
+            </div>
+          </header>
+          <main>                    
+            <div class="content content-front content-hero-image alt-{{heading-alternate-colour}}{{^heading-alternate-colour}}yellow{{/heading-alternate-colour}}">
+              <div class="columns">
+                {{#heading}}
+                <div class="column">
+                  {{{heading}}}
+                  <div class="table table-color-light-yellow table-flexible version-table {{^spreadsheet.version-table}}u-hide{{/spreadsheet.version-table}}" 
+                       data-position="below-heading"
+                       data-header="[&quot;bolded-text&quot;]" 
+                       {{#spreadsheet.version-table-columns-width}}
+                       data-width-1="{{column-1}}" 
+                       data-width-2="{{column-2}}" 
+                       data-width-3="{{column-3}}" 
+                       data-width-4="{{column-4}}" 
+                       data-width-5="{{column-5}}"
+                       {{/spreadsheet.version-table-columns-width}}>
+                    {{#spreadsheet.version-table}}
+                    <div class="row">
+                      {{#column-1}}<div class="table-column" data-html="{{{column-1}}}"><p>{{{column-1}}}</p></div>{{/column-1}}
+                      {{#column-2}}<div class="table-column" data-html="{{{column-2}}}"><p>{{{column-2}}}</p></div>{{/column-2}}
+                      {{#column-3}}<div class="table-column" data-html="{{{column-3}}}"><p>{{{column-3}}}</p></div>{{/column-3}}
+                      {{#column-4}}<div class="table-column" data-html="{{{column-4}}}"><p>{{{column-4}}}</p></div>{{/column-4}}
+                      {{#column-5}}<div class="table-column" data-html="{{{column-5}}}"><p>{{{column-5}}}</p></div>{{/column-5}}
+                    </div>
+                    {{/spreadsheet.version-table}}
+                  </div>
+                </div><!-- column -->
+                {{/heading}}                
+              </div><!-- columns -->
+            </div><!-- content -->    
+            <div class="featured__container">
+              <div class="feature-image" style="height: calc({{{image-height}}}{{^image-height}}100{{/image-height}}%);">
+                <div class="reposition-fix">{{{feature-image}}}</div><!-- reposition-fix -->
+                <div class="bar u-{{feature-image-colour-bar}}{{^feature-image-colour-bar}}show{{/feature-image-colour-bar}}"></div><!-- bar -->
+              </div><!-- feature-image -->
+            </div>
+          </main>
+          <footer>
+            <div class="document-title" data-asset="document-title" data-max-line="2"></div>
+            <div class="table table-color-light-yellow table-flexible version-table {{^spreadsheet.version-table}}u-hide{{/spreadsheet.version-table}}" 
+                 data-position="footer"
+                 data-header="[&quot;bolded-text&quot;]" 
+                 {{#spreadsheet.version-table-columns-width}}
+                 data-width-1="{{column-1}}" 
+                 data-width-2="{{column-2}}" 
+                 data-width-3="{{column-3}}" 
+                 data-width-4="{{column-4}}" 
+                 data-width-5="{{column-5}}"
+                 {{/spreadsheet.version-table-columns-width}}>
+              {{#spreadsheet.version-table}}
+              <div class="row">
+                {{#column-1}}<div class="table-column" data-html="{{{column-1}}}"><p>{{{column-1}}}</p></div>{{/column-1}}
+                {{#column-2}}<div class="table-column" data-html="{{{column-2}}}"><p>{{{column-2}}}</p></div>{{/column-2}}
+                {{#column-3}}<div class="table-column" data-html="{{{column-3}}}"><p>{{{column-3}}}</p></div>{{/column-3}}
+                {{#column-4}}<div class="table-column" data-html="{{{column-4}}}"><p>{{{column-4}}}</p></div>{{/column-4}}
+                {{#column-5}}<div class="table-column" data-html="{{{column-5}}}"><p>{{{column-5}}}</p></div>{{/column-5}}
+              </div>
+              {{/spreadsheet.version-table}}
+            </div>
+          </footer>
+          <div class="ending"></div>
+        </div>
+        <!--container fit-->
+
+      </div>
+      <!--bleed-->
+
+    </div>
+    <!--page-->
+    {{/block.hero-image-front-page}}
+    {{#block.absolute-image-front-page}}
+    <!--Inputs
+ {{pre-heading}}
+ {{heading}}
+ {{heading-alternate-colour}}
+ {{show-heading-keyline}}
+ {{font-scale}}	
+ {{feature-image}}	
+ {{image-height}}	
+    {{header-copy}}
+    {{document-title-position}}
+    {{#spreadsheet.version-table}}{{/spreadsheet.version-table}}
+    {{#spreadsheet.version-table-columns-width}}{{/spreadsheet.version-table-columns-width}}
+ {{version-table-position}}
+ -->
+    <div class="page page-front absolute-image-front-page"
+         data-font-scale="{{font-scale}}"
+         data-title-position="{{document-title-position}}{{^document-title-position}}top-right{{/document-title-position}}"
+         data-version-table-position="{{version-table-position}}{{^version-table-position}}footer{{/version-table-position}}">
+
+      <div class="bleed">
+
+        <div class="container fit">
+          <header>
+            <div class="logo" data-asset="logo"></div>
+            <div class="header-right">
+              <div class="document-title" data-asset="document-title" data-max-line="2"></div>
+              <div class="header-copy-area">
+                <div class="header-copy">
+                  <div data-max-height="dynamic"><p>{{{header-copy}}}</p></div>
+                </div>
+              </div>
+            </div>
+          </header>
+          <main>                    
+            <div class="content content-front content-absolute-image alt-{{heading-alternate-colour}}{{^heading-alternate-colour}}yellow{{/heading-alternate-colour}} {{^heading}}no-heading{{/heading}} {{^pre-heading}}no-pre-heading{{/pre-heading}}">
+              <div class="columns">
+                <div class="column">
+                  <div data-max-height="css">
+                    <div class="pre-heading-line u-{{show-heading-keyline}}"></div>
+                    {{#pre-heading}}<h3 class="pre-heading" data-max-line="1">{{{pre-heading}}}</h3>{{/pre-heading}}
+                    {{{heading}}}
+                    <div class="table table-color-light-yellow table-flexible version-table {{^spreadsheet.version-table}}u-hide{{/spreadsheet.version-table}}" 
+                         data-position="below-heading"
+                         data-header="[&quot;bolded-text&quot;]" 
+                         {{#spreadsheet.version-table-columns-width}}
+                         data-width-1="{{column-1}}" 
+                         data-width-2="{{column-2}}" 
+                         data-width-3="{{column-3}}" 
+                         data-width-4="{{column-4}}" 
+                         data-width-5="{{column-5}}"
+                         {{/spreadsheet.version-table-columns-width}}>
+                      {{#spreadsheet.version-table}}
+                      <div class="row">
+                        {{#column-1}}<div class="table-column" data-html="{{{column-1}}}"><p>{{{column-1}}}</p></div>{{/column-1}}
+                        {{#column-2}}<div class="table-column" data-html="{{{column-2}}}"><p>{{{column-2}}}</p></div>{{/column-2}}
+                        {{#column-3}}<div class="table-column" data-html="{{{column-3}}}"><p>{{{column-3}}}</p></div>{{/column-3}}
+                        {{#column-4}}<div class="table-column" data-html="{{{column-4}}}"><p>{{{column-4}}}</p></div>{{/column-4}}
+                        {{#column-5}}<div class="table-column" data-html="{{{column-5}}}"><p>{{{column-5}}}</p></div>{{/column-5}}
+                      </div>
+                      {{/spreadsheet.version-table}}
+                    </div>
+                  </div>                
+                </div>
+              </div>
+            </div>                    
+            <div class="featured__container">
+              <div class="featured-image" style="height: calc(3mm + 0.4rem + {{{image-height}}}{{^image-height}}50{{/image-height}}%);">
+                <div class="reposition-fix">{{{feature-image}}}</div>                
+              </div>
+            </div>            
+          </main>
+          <footer class="absolutely">
+            <div class="document-title" data-asset="document-title" data-max-line="2"></div>
+            <div class="table table-color-light-yellow table-flexible version-table {{^spreadsheet.version-table}}u-hide{{/spreadsheet.version-table}}" 
+                 data-position="footer"
+                 data-header="[&quot;bolded-text&quot;]" 
+                 {{#spreadsheet.version-table-columns-width}}
+                 data-width-1="{{column-1}}" 
+                 data-width-2="{{column-2}}" 
+                 data-width-3="{{column-3}}" 
+                 data-width-4="{{column-4}}" 
+                 data-width-5="{{column-5}}"
+                 {{/spreadsheet.version-table-columns-width}}>
+              {{#spreadsheet.version-table}}
+              <div class="row">
+                {{#column-1}}<div class="table-column" data-html="{{{column-1}}}"><p>{{{column-1}}}</p></div>{{/column-1}}
+                {{#column-2}}<div class="table-column" data-html="{{{column-2}}}"><p>{{{column-2}}}</p></div>{{/column-2}}
+                {{#column-3}}<div class="table-column" data-html="{{{column-3}}}"><p>{{{column-3}}}</p></div>{{/column-3}}
+                {{#column-4}}<div class="table-column" data-html="{{{column-4}}}"><p>{{{column-4}}}</p></div>{{/column-4}}
+                {{#column-5}}<div class="table-column" data-html="{{{column-5}}}"><p>{{{column-5}}}</p></div>{{/column-5}}
+              </div>
+              {{/spreadsheet.version-table}}
+            </div>
+          </footer>
+          <div class="ending"></div>        
+        </div>
+        <!--container fit-->
+
+      </div>
+      <!--bleed-->
+
+    </div>
+    <!--page-->
+    {{/block.absolute-image-front-page}}
+    {{#block.cover-image-front-page}}
+    <!--Inputs
+ {{heading}}
+ {{heading-alternate-colour}}
+ {{feature-image}}	
+ {{gradient-colour}}
+    {{top-gradient-height}}
+    {{bottom-gradient-height}}
+ {{left-gradient-width}}
+    {{header-copy}}
+    {{document-title-position}}
+    {{#spreadsheet.version-table}}{{/spreadsheet.version-table}}
+    {{#spreadsheet.version-table-columns-width}}{{/spreadsheet.version-table-columns-width}}
+ {{version-table-position}}
+ -->
+    <div class="page page-front text-based-front-page fw-cover-front-page"
+         data-title-position="{{document-title-position}}{{^document-title-position}}top-right{{/document-title-position}}"
+         data-version-table-position="{{version-table-position}}{{^version-table-position}}footer{{/version-table-position}}">
+
+      <div class="bleed">
+
+        <div class="container fit">                
+          <header>
+            <div class="logo" data-asset="logo"></div>
+            <div class="header-right">
+              <div class="document-title" data-asset="document-title" data-max-line="2"></div>
+              <div class="header-copy-area">
+                <div class="header-copy">
+                  <div data-max-height="dynamic">{{{header-copy}}}</div>
+                </div>
+              </div>
+            </div>
+          </header>
+          <main>                    
+            <div class="content content-front content-text-based alt-{{heading-alternate-colour}}{{^heading-alternate-colour}}yellow{{/heading-alternate-colour}}" style="padding: 1rem 1rem 1rem 1.2rem;">
+              <div class="feature-image">
+                <div class="reposition-fix">{{{feature-image}}}</div>
+                <div class="gradient-overlay" style="background-image: url('https://flinders.outfit.io/projects/180159/documents/1454286/dynamic_export?access_token=JWor8ppzRALdnzAteTtYKgdX&context%5Bgradient-colour%5D={{{gradient-colour}}}{{^gradient-colour}}rgba(0,0,0,0.6){{/gradient-colour}}&context%5Btop-gradient-height%5D={{top-gradient-height}}{{^top-gradient-height}}0{{/top-gradient-height}}&context%5Bbottom-gradient-height%5D={{bottom-gradient-height}}{{^bottom-gradient-height}}0{{/bottom-gradient-height}}&context%5Bleft-gradient-width%5D={{left-gradient-width}}')"></div>
+              </div>
+              <div class="columns">
+                <div class="column">
+                  <div class="fit flex-inherit">
+                    <div class="flex-inherit" data-max-height="dynamic">
+                      {{{heading}}}
+                      <div class="table table-color-light-yellow table-flexible version-table {{^spreadsheet.version-table}}u-hide{{/spreadsheet.version-table}}" 
+                           data-position="below-heading"
+                           data-header="[&quot;bolded-text&quot;]" 
+                           {{#spreadsheet.version-table-columns-width}}
+                           data-width-1="{{column-1}}" 
+                           data-width-2="{{column-2}}" 
+                           data-width-3="{{column-3}}" 
+                           data-width-4="{{column-4}}" 
+                           data-width-5="{{column-5}}"
+                           {{/spreadsheet.version-table-columns-width}}>
+                        {{#spreadsheet.version-table}}
+                        <div class="row">
+                          {{#column-1}}<div class="table-column" data-html="{{{column-1}}}"><p>{{{column-1}}}</p></div>{{/column-1}}
+                          {{#column-2}}<div class="table-column" data-html="{{{column-2}}}"><p>{{{column-2}}}</p></div>{{/column-2}}
+                          {{#column-3}}<div class="table-column" data-html="{{{column-3}}}"><p>{{{column-3}}}</p></div>{{/column-3}}
+                          {{#column-4}}<div class="table-column" data-html="{{{column-4}}}"><p>{{{column-4}}}</p></div>{{/column-4}}
+                          {{#column-5}}<div class="table-column" data-html="{{{column-5}}}"><p>{{{column-5}}}</p></div>{{/column-5}}
+                        </div>
+                        {{/spreadsheet.version-table}}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>                    
+          </main>
+          <footer class="absolutely">
+            <div class="document-title" data-asset="document-title" data-max-line="2"></div>
+            <div class="table table-color-light-yellow table-flexible version-table {{^spreadsheet.version-table}}u-hide{{/spreadsheet.version-table}}" 
+                 data-position="footer"
+                 data-header="[&quot;bolded-text&quot;]" 
+                 {{#spreadsheet.version-table-columns-width}}
+                 data-width-1="{{column-1}}" 
+                 data-width-2="{{column-2}}" 
+                 data-width-3="{{column-3}}" 
+                 data-width-4="{{column-4}}" 
+                 data-width-5="{{column-5}}"
+                 {{/spreadsheet.version-table-columns-width}}>
+              {{#spreadsheet.version-table}}
+              <div class="row">
+                {{#column-1}}<div class="table-column" data-html="{{{column-1}}}"><p>{{{column-1}}}</p></div>{{/column-1}}
+                {{#column-2}}<div class="table-column" data-html="{{{column-2}}}"><p>{{{column-2}}}</p></div>{{/column-2}}
+                {{#column-3}}<div class="table-column" data-html="{{{column-3}}}"><p>{{{column-3}}}</p></div>{{/column-3}}
+                {{#column-4}}<div class="table-column" data-html="{{{column-4}}}"><p>{{{column-4}}}</p></div>{{/column-4}}
+                {{#column-5}}<div class="table-column" data-html="{{{column-5}}}"><p>{{{column-5}}}</p></div>{{/column-5}}
+              </div>
+              {{/spreadsheet.version-table}}
+            </div>
+          </footer>
+          <div class="ending"></div>
+        </div>
+        <!--container fit-->
+
+      </div>
+      <!--bleed-->
+
+    </div>
+    <!--page-->
+    {{/block.cover-image-front-page}}
+    {{#block.satac-cover-front-page}}
+    <!--Inputs
+ {{heading}}
+ {{show-keylines}}
+ {{image}}
+ {{image-height}}
+ {{image-right-padding}}
+ {{logo-partner}}
+ -->
+    <div class="page page-front satac-cover-front-page">
+
+      <div class="bleed">
+
+        <div class="container fit">
+          <header>
+            <div class="headings keylines-{{show-keylines}}{{^show-keylines}}show{{/show-keylines}}" 
+                 data-max-height="css">{{{heading}}}</div>
+            <div class="logos">
+              <div class="logo" data-asset="logo"></div>
+              {{#logo-partner}}<img src="{{{logo-partner}}}" class="logo-partner" />{{/logo-partner}}
+            </div>
+          </header>
+          <main>
+            <div class="featured-image rp-{{image-right-padding}}" 
+                 style="height: calc(3mm + 1.2rem + {{{image-height}}}{{^image-height}}100{{/image-height}}%);">
+              <div class="reposition-fix">{{{image}}}</div>
+            </div>
+          </main>         
+        </div>
+        <!--container fit-->
+
+      </div>
+      <!--bleed-->
+
+    </div>
+    <!--page-->
+    {{/block.satac-cover-front-page}}
+    {{/collection.MP--front-page}}
+
+    {{#collection.MP--internal-pages}}
+    {{#block.customisable-page}}
+    <div class="page page-internal page-customisable" data-toc="{{toc-entry}}">
+
+      <div class="bleed">
+
+        <div class="container fit">        
+          <header>
+            <div class="logo" data-asset="logo"></div>
+          </header>        
+          <main class="dual-{{dual-columns-layout}}{{^dual-columns-layout}}equal-width{{/dual-columns-layout}} hero-{{hero-image-position}}{{^hero-image-position}}top{{/hero-image-position}}">
+
+            <div class="page-heading__container {{^collection.customisable-heading}}u-hide{{/collection.customisable-heading}}">
+              <div class="page-heading page-heading--primary">
+                {{#collection.customisable-heading}}
+                {{#block.heading-text}}
+                {{#heading}}
+                <div class="heading-item heading-text" style="flex: {{{flexible-item-size}}}" data-heading-underline='{{{heading-underline}}}'>
+                  <div style="font-size: calc(1rem * ({{heading-size}}{{^heading-size}}100{{/heading-size}} / 100));">
+                    {{{heading}}}
+                  </div><!-- font-size -->
+                </div><!-- heading -->
+                {{/heading}}
+                {{/block.heading-text}}
+                {{#block.heading-table}}
+                <div class="heading-item heading-table" style="flex: {{{flexible-item-size}}}">
+                  <div class="row heading">
+                    {{#heading-cell1}}<div class="cell">{{{heading-cell1}}}</div>{{/heading-cell1}}
+                    {{#heading-cell2}}<div class="cell">{{{heading-cell2}}}</div>{{/heading-cell2}}
+                  </div>
+                  <div class="row">
+                    {{#body-cell1}}<div class="cell" style="width: {{{column-width}}}{{^column-width}}50{{/column-width}}%">{{{body-cell1}}}</div>{{/body-cell1}}
+                    {{#body-cell2}}<div class="cell">{{{body-cell2}}}</div>{{/body-cell2}}
+                  </div>
+                </div>
+                {{/block.heading-table}}        
+                {{/collection.customisable-heading}}
+              </div><!-- page-heading -->
+            </div><!--page-heading__container-->            
+
+            {{#hero-image}}
+            <div class="hero__container" 
+                 style="flex: 0 0 {{{hero-image-height-percentage}}}{{^hero-image-height-percentage}}25{{/hero-image-height-percentage}}%; height: {{{hero-image-height-percentage}}}{{^hero-image-height-percentage}}25{{/hero-image-height-percentage}}%;" data-reposition-available="{{reposition-available}}">
+              <div class="reposition-fix">{{{hero-image}}}</div>
+            </div><!--hero__container-->
+            {{/hero-image}}
+
+            <div class="content">
+              <div class="page-heading__container {{^collection.customisable-heading}}u-hide{{/collection.customisable-heading}}">
+                <div class="page-heading page-heading--secondary" data-max-height="css">                  
+                  {{#collection.customisable-heading}}
+                  {{#block.heading-text}}
+                  {{#heading}}
+                  <div class="heading-item heading-text" style="flex: {{{flexible-item-size}}}" data-heading-underline='{{{heading-underline}}}'>
+                    <div style="font-size: calc(1rem * ({{heading-size}}{{^heading-size}}100{{/heading-size}} / 100));">
+                      {{{heading}}}
+                    </div><!-- font-size -->
+                  </div><!-- heading -->
+                  {{/heading}}
+                  {{/block.heading-text}}
+                  {{#block.heading-table}}
+                  <div class="heading-item heading-table" style="flex: {{{flexible-item-size}}}">
+                    <div class="row heading">
+                      {{#heading-cell1}}<div class="cell">{{{heading-cell1}}}</div>{{/heading-cell1}}
+                      {{#heading-cell2}}<div class="cell">{{{heading-cell2}}}</div>{{/heading-cell2}}
+                    </div>
+                    <div class="row">
+                      {{#body-cell1}}<div class="cell" style="width: {{{column-width}}}{{^column-width}}50{{/column-width}}%">{{{body-cell1}}}</div>{{/body-cell1}}
+                      {{#body-cell2}}<div class="cell">{{{body-cell2}}}</div>{{/body-cell2}}
+                    </div>
+                  </div>
+                  {{/block.heading-table}}
+                  {{#block.table}}
+                  <div class="heading-item heading-table-standard" style="flex: {{{flexible-item-size}}}">
+                    <div class="table table-color-{{table-colour}}{{^table-colour}}yellow{{/table-colour}} table-flexible" data-header="{{table-header}}" {{#spreadsheet.table-columns-width}}data-width-1="{{column-1}}" data-width-2="{{column-2}}" data-width-3="{{column-3}}" data-width-4="{{column-4}}" data-width-5="{{column-5}}" data-width-6="{{column-6}}"{{/spreadsheet.table-columns-width}}>
+                      {{#spreadsheet.table}}
+                      <div class="row">
+                        {{#column-1}}<div class="table-column" data-html="{{{column-1}}}"><p>{{{column-1}}}</p></div>{{/column-1}}
+                        {{#column-2}}<div class="table-column" data-html="{{{column-2}}}"><p>{{{column-2}}}</p></div>{{/column-2}}
+                        {{#column-3}}<div class="table-column" data-html="{{{column-3}}}"><p>{{{column-3}}}</p></div>{{/column-3}}
+                        {{#column-4}}<div class="table-column" data-html="{{{column-4}}}"><p>{{{column-4}}}</p></div>{{/column-4}}
+                        {{#column-5}}<div class="table-column" data-html="{{{column-5}}}"><p>{{{column-5}}}</p></div>{{/column-5}}
+                        {{#column-6}}<div class="table-column" data-html="{{{column-6}}}"><p>{{{column-6}}}</p></div>{{/column-6}}
+                      </div>
+                      {{/spreadsheet.table}}
+                    </div>
+                  </div>
+                  {{/block.table}}                
+                  {{/collection.customisable-heading}}
+                </div><!-- page-heading -->
+              </div><!--page-heading__container-->              
+
+              <div class="columns">
+                {{#collection.customisable-content}}            
+                {{#block.column}}
+                <div class="column">
+                  <div class="column-inner">
+                    <div data-max-height="dynamic">
+                      {{#collection.content}}
+                      {{#block.spacer}}
+                      <div class="spacer" style="height: calc(2.16rem / 100 * {{{spacer-height}}}{{^spacer-height}}25{{/spacer-height}});">
+                        <div class="spacer-line" style="height: calc(2.16rem / 100 * {{{divider-thickness}}}{{^divider-thickness}}0{{/divider-thickness}});"></div>
+                      </div>
+                      {{/block.spacer}}
+                      {{#block.image}}
+                      <div class="image {{^image}}no-image{{/image}}" style="height: {{{image-height}}}{{^image-height}}5{{/image-height}}rem;">
+                        <div class="reposition-fix">{{{image}}}</div>
+                      </div>
+                      <div class="image-caption" data-max-line="2">
+                        <p>{{{image-caption}}}</p>
+                      </div>
+                      {{/block.image}}
+                      {{#block.logo}}
+                      {{#image}}
+                      <!-- inputs order: {{image}}{{image-height}}{{alignment}} -->
+                      <div class="image image-logo align-{{alignment}}" style="height: {{{image-height}}}{{^image-height}}5{{/image-height}}rem;">
+                        <img src="{{{image}}}" />
+                      </div>
+                      {{/image}}
+                      {{/block.logo}}
+                      {{#block.text}}
+                      <div class="text" style="font-size: calc(1rem * ({{copy-heading-size}}{{^copy-heading-size}}100{{/copy-heading-size}} / 100));">
+                        {{{text}}}
+                      </div>
+                      {{/block.text}}
+                      {{#block.brag-points}}
+                      <div class="text brag-points" style="font-size: calc(1rem * ({{copy-heading-size}}{{^copy-heading-size}}100{{/copy-heading-size}} / 100));">
+                        {{{brag-points}}}
+                      </div>
+                      {{/block.brag-points}}
+                      {{#block.callout}}
+                      <div class="callout {{callout-style}}{{^callout-style}}outline{{/callout-style}}" data-color="{{callout-color}}{{^callout-color}}yellow{{/callout-color}}">
+                        {{{callout-text}}}
+                      </div>
+                      {{/block.callout}}
+                      {{#block.table}}
+                      <div class="table table-color-{{table-colour}}{{^table-colour}}yellow{{/table-colour}} table-flexible" 
+                           data-header="{{table-header}}" 
+                           {{#spreadsheet.table-columns-width}}
+                           data-width-1="{{column-1}}" 
+                           data-width-2="{{column-2}}" 
+                           data-width-3="{{column-3}}" 
+                           data-width-4="{{column-4}}" 
+                           data-width-5="{{column-5}}" 
+                           data-width-6="{{column-6}}"
+                           {{/spreadsheet.table-columns-width}}>
+                        {{#spreadsheet.table}}
+                        <div class="row">
+                          {{#column-1}}<div class="table-column" data-html="{{{column-1}}}"><p>{{{column-1}}}</p></div>{{/column-1}}
+                          {{#column-2}}<div class="table-column" data-html="{{{column-2}}}"><p>{{{column-2}}}</p></div>{{/column-2}}
+                          {{#column-3}}<div class="table-column" data-html="{{{column-3}}}"><p>{{{column-3}}}</p></div>{{/column-3}}
+                          {{#column-4}}<div class="table-column" data-html="{{{column-4}}}"><p>{{{column-4}}}</p></div>{{/column-4}}
+                          {{#column-5}}<div class="table-column" data-html="{{{column-5}}}"><p>{{{column-5}}}</p></div>{{/column-5}}
+                          {{#column-6}}<div class="table-column" data-html="{{{column-6}}}"><p>{{{column-6}}}</p></div>{{/column-6}}
+                        </div>
+                        {{/spreadsheet.table}}
+                      </div>
+                      {{/block.table}}
+                      {{/collection.content}}
+                    </div><!-- dynamic -->
+                  </div>
+                </div>
+                {{/block.column}}            
+                {{/collection.customisable-content}}
+              </div>
+            </div>
+          </main>
+          <footer>
+            <div class="paging">
+              <strong>|</strong> <span class="code" data-asset="document-title"></span>
+            </div>
+          </footer>        
+          <div class="ending"></div>
+        </div>
+        <!--container fit-->
+
+      </div>
+      <!--bleed-->
+
+    </div>
+    <!--page-->
+    {{/block.customisable-page}}
+
+    {{#block.toc-page}}
+    <div class="page page-internal page-toc">
+
+      <div class="bleed">
+
+        <div class="container fit">        
+          <main>
+            <div class="content">
+              <div class="columns">
+                {{#collection.customisable-content}}            
+                {{#block.column}}
+                <div class="column">
+                  <div class="column-inner">
+                    <div data-max-height="dynamic">
+                      {{#collection.content}}
+                      {{#block.spacer}}
+                      <div class="spacer" style="height: calc(2.16rem / 100 * {{{spacer-height}}}{{^spacer-height}}25{{/spacer-height}});">
+                        <div class="spacer-line" style="height: calc(2.16rem / 100 * {{{divider-thickness}}}{{^divider-thickness}}0{{/divider-thickness}});"></div>
+                      </div>
+                      {{/block.spacer}}
+                      {{#block.image}}
+                      <div class="image {{^image}}no-image{{/image}}" style="height: {{{image-height}}}{{^image-height}}5{{/image-height}}rem;">
+                        <div class="reposition-fix">{{{image}}}</div>
+                      </div>
+                      <div class="image-caption" data-max-line="2">
+                        <p>{{{image-caption}}}</p>
+                      </div>
+                      {{/block.image}}
+                      {{#block.text}}
+                      <div class="text" style="font-size: calc(1rem * ({{copy-heading-size}}{{^copy-heading-size}}100{{/copy-heading-size}} / 100));">
+                        {{{text}}}
+                      </div>
+                      {{/block.text}}
+                      {{#block.table}}
+                      <div class="table table-color-{{table-colour}}{{^table-colour}}yellow{{/table-colour}}" data-header="{{table-header}}">
+                        {{#spreadsheet.table}}
+                        <div class="row">
+                          {{#column-1}}<div class="table-column" data-html="{{{column-1}}}"><p>{{{column-1}}}</p></div>{{/column-1}}
+                          {{#column-2}}<div class="table-column" data-html="{{{column-2}}}"><p>{{{column-2}}}</p></div>{{/column-2}}
+                          {{#column-3}}<div class="table-column" data-html="{{{column-3}}}"><p>{{{column-3}}}</p></div>{{/column-3}}
+                          {{#column-4}}<div class="table-column" data-html="{{{column-4}}}"><p>{{{column-4}}}</p></div>{{/column-4}}
+                        </div>
+                        {{/spreadsheet.table}}
+                      </div>
+                      {{/block.table}}
+                      {{#block.toc}}
+                      <div class="table table-color-none table-toc" data-header="[]">
+                        {{#spreadsheet.toc}}
+                        <div class="row">
+                          <div class="table-column"><p><strong>{{{page-name}}}</strong></p></div>
+                          <div class="table-column"><p>{{{page-number}}}</p></div>
+                        </div>
+                        {{/spreadsheet.toc}}
+                        {{^spreadsheet.toc}}
+                        <div class="dynamic-toc"></div>
+                        {{/spreadsheet.toc}}
+                      </div>
+                      {{/block.toc}}
+                      {{/collection.content}}
+                    </div><!-- dynamic -->
+                  </div>
+                </div><!-- column -->
+                {{/block.column}}            
+                {{/collection.customisable-content}}
+              </div><!-- columns -->
+            </div><!-- content -->
+          </main>
+          <footer>
+            <div class="paging">
+              <strong>|</strong> <span class="code" data-asset="document-title"></span>
+            </div>
+          </footer>        
+          <div class="ending"></div>
+        </div>
+        <!--container fit-->
+
+      </div>
+      <!--bleed-->
+
+    </div>
+    <!--page-->
+    {{/block.toc-page}}
+
+    {{#block.full-image-page}}
+    <div class="page page-internal page-full-image">
+
+      <div class="bleed">
+
+        <div class="container fit">
+          <div class="background-image">
+            <div class="background-inner">
+              <div class="backgroundImage"><div class="reposition-fix">{{{hero-image}}}</div></div>
+              <div class="gradient-overlay" style="background-image: url('https://flinders.outfit.io/projects/180159/documents/1454286/dynamic_export?access_token=JWor8ppzRALdnzAteTtYKgdX&context%5Bgradient-colour%5D={{{gradient-colour}}}{{^gradient-colour}}rgba(0,0,0,0.6){{/gradient-colour}}&context%5Btop-gradient-height%5D={{top-gradient-height}}{{^top-gradient-height}}0{{/top-gradient-height}}&context%5Bbottom-gradient-height%5D={{bottom-gradient-height}}{{^bottom-gradient-height}}0{{/bottom-gradient-height}}')"></div>
+            </div>
+
+
+          </div>
+          <header></header>
+          <main>
+            {{#collection.page-content}} 
+            <div class="content">       
+              {{#collection.content-section}} 
+              <div class="columns">
+                <div class="column">
+                  <div class="fit flex-inherit">
+                    <div class="items flex-inherit" data-max-height="dynamic">
+                      {{#block.quote}}
+                      <div class="quote coloring-{{quote-colour}}{{^quote-colour}}white{{/quote-colour}} positioning-{{quote-position}}{{^quote-position}}left{{/quote-position}} item">
+                        {{{quote}}}
+                      </div>
+                      {{/block.quote}}
+                      {{#block.heading}}
+                      <div class="headings coloring-{{heading-colour}}{{^heading-colour}}white{{/heading-colour}} positioning-{{heading-position}}{{^heading-position}}left{{/heading-position}} item">
+                        {{{heading}}}
+                      </div>
+                      {{/block.heading}}
+                      {{#block.statistic}}
+                      <div class="statistic coloring-{{statistic-colour}}{{^statistic-colour}}white{{/statistic-colour}} positioning-{{statistic-position}}{{^statistic-position}}left{{/statistic-position}} item">
+                        {{{statistic}}}
+                      </div>
+                      {{/block.statistic}}
+                    </div>
+                  </div>                
+                </div>
+              </div> 
+              {{/collection.content-section}} 
+            </div>
+            {{/collection.page-content}}
+          </main>
+          <footer></footer>
+          <div class="ending"></div>
+        </div>
+        <!--container fit-->
+
+      </div>
+      <!--bleed-->
+
+    </div>
+    <!--page-->
+    {{/block.full-image-page}}                
+
+    {{/collection.MP--internal-pages}}
+    {{#collection.MP--back-page}}
+    {{#block.back-page}}
+    <div class="page back-page">
+      <div class="bleed">
+        <div class="container fit">          
+          <main>
+            <div class="main__inner">
+              <div data-max-height="dynamic">
+                {{{content}}}
+                <div class="social-icons">
+                  {{#collection.social-icons}}
+                  {{#block.facebook}}
+                  <div class="social-icon"><a href="{{{url}}}{{^url}}https://www.facebook.com/FlindersUniversity{{/url}}"><img src="https://files.outfit.io/media_library_items/202735/Facebook%2520Icon.svg"/></a></div>
+                  {{/block.facebook}}
+                  {{#block.instagram}}
+                  <div class="social-icon"><a href="{{{url}}}{{^url}}https://www.instagram.com/flindersuniversity{{/url}}"><img src="https://files.outfit.io/media_library_items/202734/Instagram%2520Icon.svg"/></a></div>
+                  {{/block.instagram}}
+                  {{#block.twitter}}
+                  <div class="social-icon"><a href="{{{url}}}{{^url}}https://twitter.com/Flinders{{/url}}"><img src="https://files.outfit.io/media_library_items/202736/Twitter%2520Icon.svg"/></a></div>
+                  {{/block.twitter}}
+                  {{#block.custom}}
+                  {{#icon}}<div class="social-icon"><a href="{{{url}}}"><img src="{{{icon}}}"/></a></div>{{/icon}}
+                  {{/block.custom}}
+                  {{/collection.social-icons}}
+                </div>
+              </div>   
+            </div>
+          </main>
+          <div class="footer">
+            <div class="logos">
+              <img class="primary" src="{{{account.logos.primary}}}" />
+              <div class="partner">
+                {{#partner-logo}}<img src="{{{partner-logo}}}"/>{{/partner-logo}}
+                {{#partner-details}}<div class="partner-details"><p data-max-line="4">{{{partner-details}}}</p></div>{{/partner-details}}
+              </div>
+            </div>
+            <div class="disclaimer-copy">
+              <p data-max-line="3">{{disclaimer-copy}}</p>
+              <p>CRICOS No. {{{account.snippets.cricos}}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{/block.back-page}}
+    {{/collection.MP--back-page}}
+
+    <script>
+      window.showCrop = {{show-crop}}{{^show-crop}}true{{/show-crop}};
+                                                         window.pageSize = "{{page-size}}";
+    </script>
+    <script src="js/main.js"></script>
+    <script src="js/prefixfree.js"></script>
+    <script src="js/check-export-mode.js"></script>
+    <script src="js/dynamic-inject.js"></script>
+    <script src="js/char-limit.js"></script>
+    <script src="js/max-line-check.js"></script>
+    <script src="js/max-height-check.js"></script>
+    <script src="js/textfit.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/fontfaceobserver.js"></script>
+    <script>
+      // Check if version table exist
+      const container = document.querySelector('.page-front .container');
+      const footer = document.querySelector('.page-front footer');
+      const versionTable = document.querySelector('.version-table');
+      const tablesFlexible = document.querySelectorAll('.table-flexible');
+
+      tablesFlexible.forEach(tb => {
+        const tbRows = tb.querySelectorAll('.row');
+        let columnsCount = 0;
+
+        tbRows.forEach(row => {
+          const tbColumns = row.querySelectorAll('.table-column');
+
+          columnsCount = Math.max(columnsCount, tbColumns.length);
+
+          tbColumns.forEach((col, index) => {
+            const width = tb.dataset[`width-${index + 1}`];
+            if (width) {
+              col.style.width = `${width}%`;
+              col.style.flex = `0 0 ${width}%`;
+            }
+          });
+        });
+
+        tbRows.forEach(row => {
+          const tbColumns = row.querySelectorAll('.table-column');          
+
+          if (tbColumns.length < columnsCount) {
+            tbColumns[tbColumns.length - 1].style.flex = `1`;
+          }
+        });
+
+        //validate width
+        let totalWidth = 0;
+        for(i = 0; i < columnsCount; i++) {
+          let width = tb.dataset[`width-${i + 1}`];
+          width = width ? parseFloat(width) : 5;
+          totalWidth += width;
+        }
+
+        if (totalWidth > 100) {
+          tb.classList.add('overflow', 'invalid-width');
+        } else {
+          tb.classList.remove('overflow', 'invalid-width');
+        }
+      });
+
+      // Absolute Image front page font scale
+      function frontPageFontScale() {
+        const pages = document.querySelectorAll('.text-based-front-page, .absolute-image-front-page, .hero-image-front-page');
+
+        pages.forEach(page => {
+          const scale = page.dataset.fontScale;
+          const content = page.querySelector('.content');
+          if (!content || !scale) return;
+
+          const els = content.querySelectorAll('h1,h2,h3,p,ul,ol');
+          els.forEach(el => {
+            switch (el.tagName.toLowerCase()) {
+              case 'h1':
+                el.style.fontSize = `calc(0.835rem + ${scale}pt)`;
+                break;
+              case 'h2':
+                el.style.fontSize = `calc(0.69rem + ${scale}pt)`;
+                break;
+              case 'h3':
+                el.style.fontSize = `calc(0.34572rem + ${scale}pt)`;
+                break;
+              default:
+                el.style.fontSize = `calc(0.285rem + ${scale}pt)`;
+                break;
+            }
+          });
+        });
+      }
+    </script>
+    <script>
+
+      //console.clear();
+
+      // Tracking text changes and firing text restriction functions (mutationObserver)
+      const overflowObserver = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+          dynamicDocTitle();
+          frontPageFontScale();          
+          maxLineCheck();
+          maxHeightCheck();
+        });
+      });
+
+      const injectObserver = new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+          injectDynamicContent();
+        });
+      });
+
+      const injectSources = document.querySelectorAll('[data-target-id]');
+
+      overflowObserver.observe(document.body, {
+        attributes: false,
+        characterData: true,
+        childList: true,
+        subtree: true,
+        attributeOldValue: false,
+        characterDataOldValue: true
+      });
+
+      if (injectSources.length > 0) {
+        injectSources.forEach(src => {
+          injectObserver.observe(src, {
+            attributes: false,
+            characterData: true,
+            childList: true,
+            subtree: true,
+            attributeOldValue: false,
+            characterDataOldValue: true
+          });
+        });
+      }
+
+      // Calling text size restriction functions once the fonts are loaded
+      // All external font-families need to be added to 'fonts' array
+      document.addEventListener('DOMContentLoaded', function(event) {
+        const fonts = ['Akzidenz Grotesk BE', 'Akzidenz Grotesk BE Cn'];
+        const fontObservers = [];
+
+        fonts.forEach(font => {
+          const obs = new FontFaceObserver(font);
+          fontObservers.push(obs.load())
+        });
+
+        Promise.all(fontObservers).then(() => {
+          dynamicDocTitle();
+          frontPageFontScale();
+          maxLineCheck();
+          maxHeightCheck();
+          injectDynamicContent();
+          hideEmptyTitles();     
+          tableFit();
+
+          TextFit.fit({
+            selector: '.textFit',
+            alignItems: 'center',
+          });                    
+
+          document.dispatchEvent(new Event('printready'));
+        });
+      });    
+
+      checkCrop();
+      checkExport();
+
+      function tableFit() {
+        const dataEls = document.querySelectorAll(".table-column");
+        dataEls.forEach(el => {          
+
+          let html = el.dataset.html;
+
+          if (html) {
+            if(html === "") {
+              el.remove();
+            }
+
+            html = html
+              .replace(/\[#bold\]/gi, '<strong>')
+              .replace(/\[\/bold\]/gi, '</strong>')
+              .replace(/\[#italic\]/gi, '<em>')
+              .replace(/\[\/italic\]/gi, '</em>')
+              .replace(/\[blank\]/gi, '<p>&nbsp;</p>')
+              .replace(/\[#bullet-group\]/gi, '<ul>')
+              .replace(/\[\/bullet-group\]/gi, '</ul>')
+              .replace(/\[#bullet\]/gi, '<li>')
+              .replace(/\[\/bullet\]/gi, '</li>')
+              .replace(/\[#shade\]/gi, '')
+              .replace(/\[\/shade\]/gi, '')
+              .replace(/\[#link\s+(\S+)\s?\]/gi, '<a href="$1">')
+              .replace(/\[\/link\]/gi, '</a>');
+
+            el.innerHTML = html;
+          }
+        });     
+
+      }
+
+      function dynamicDocTitle() {
+        const els = document.querySelectorAll('[data-asset]');
+
+        els.forEach((el) => {
+          const asset = document.getElementById(el.dataset.asset);
+
+          if (el.innerHTML !== asset.innerHTML) {
+            el.innerHTML = asset.innerHTML;
+          }
+        });
+      }
+
+      function dynamicToc() {
+        const pages = document.querySelectorAll('.page-internal');
+        const tocs = document.querySelectorAll(".dynamic-toc");
+
+        pages.forEach((page, index) => {
+          if (index % 2) {
+            page.classList.add('page-even');
+          } else {
+            page.classList.remove('page-even');
+          }
+        });
+
+        tocs.forEach((toc) => {
+          let htmls = '';
+          pages.forEach((page, index) => {
+            const entry = page.dataset.toc;
+            if (entry) {
+              const html = `<div class="row">
+<div class="table-column"><p><strong>${entry}</strong></p></div>
+<div class="table-column"><p>${index + 1}</p></div>
+      </div>`;
+              htmls = `${htmls}${html}`;
+            }
+          });
+
+          toc.innerHTML = htmls;
+        });
+      }
+    </script>
+  </body>
+
+</html>
